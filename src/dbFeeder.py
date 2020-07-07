@@ -61,7 +61,7 @@ def data_dispatcher(conn):
     clients_name = []
     # assign the directory of files being stored
     dir_dispatcher = os.path.dirname(os.getcwd())
-    base = os.path.join(dir_dispatcher, "dat")
+    dat_base = os.path.join(dir_dispatcher, "dat")
 
     try:
         # find all materials name and stores them in one list
@@ -85,7 +85,7 @@ def data_dispatcher(conn):
                 result = cursor.fetchall()
                 # create file
                 file_name = "client-" + clients + "-material-" + str(materials) + ".csv"
-                file_path = os.path.join(base, file_name)
+                file_path = os.path.join(dat_base, file_name)
                 file = open(file_path, 'w', encoding="utf-8", newline="")
                 for lines in result:
                     # insert info into files
@@ -94,12 +94,12 @@ def data_dispatcher(conn):
                 file.close()
         # if the only input is client
         for clients in clients_name:
-            find_all_client = "SELECT dates,clients,sum(orders) as c_orders FROM aps1017.order_data " \
+            find_all_client = "SELECT pri_key,dates,clients,sum(orders) as c_orders FROM aps1017.order_data " \
                               "where clients = '%s' group by dates order by dates; " % (clients)
             cursor.execute(find_all_client)
             result = cursor.fetchall()
             file_name = "client-" + clients + "-material-all.csv"
-            file_path = os.path.join(base, file_name)
+            file_path = os.path.join(dat_base, file_name)
             file = open(file_path, "w", encoding="utf-8", newline="")
             for lines in result:
                 writer = csv.writer(file, dialect="excel")
@@ -107,12 +107,12 @@ def data_dispatcher(conn):
             file.close()
         # if the only input is material
         for materials in materials_name:
-            find_all_client = "SELECT dates,materials,sum(orders) as m_orders FROM aps1017.order_data " \
+            find_all_client = "SELECT pri_key,dates,materials,sum(orders) as m_orders FROM aps1017.order_data " \
                               "where materials = '%s' group by dates order by dates; " % (materials)
             cursor.execute(find_all_client)
             result = cursor.fetchall()
             file_name = "client-all-" + "-material-" + str(materials) + ".csv"
-            file_path = os.path.join(base, file_name)
+            file_path = os.path.join(dat_base, file_name)
             file = open(file_path, "w", encoding="utf-8", newline="")
             for lines in result:
                 writer = csv.writer(file, dialect="excel")
@@ -123,7 +123,27 @@ def data_dispatcher(conn):
         conn.rollback()
     cursor.close()
     conn.close()
+    # store materials_name and clients_name into txt files
+    file_name = "clients_name.txt"
+    store_file(file_name, dat_base, clients_name)
+    file_name = "materials_name.txt"
+    store_file(file_name, dat_base, materials_name)
 
+
+def store_file(file_name, dir, content):
+    file_path = os.path.join(dir, file_name)
+    try:
+        file = open(file_path, "w", encoding="utf-8", newline=None)
+        for items in content:
+            if not isinstance(items, str):
+                file.writelines(str(items)+"\n")
+            else:
+                file.writelines(items+"\n")
+        print("file " + file_name + " writing finished...")
+    except Exception as e:
+        print(e)
+        file.close()
+    file.close()
 
 
 if __name__ == "__main__":
