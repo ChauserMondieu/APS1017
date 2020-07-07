@@ -1,6 +1,9 @@
 import pymysql
 import csv
 import os
+import time
+
+ADD_TABLE = False
 
 
 def db_connect(host, port, user, password, database, charset):
@@ -15,15 +18,30 @@ def data_feeder(conn, dir):
     key = 1
     new_line = []
     try:
+        # delete existing table
+        drop_table = "DROP TABLE IF EXISTS order_data"
+        cursor.execute(drop_table)
+        # create new table
+        create_table = "CREATE TABLE IF NOT EXISTS order_data(" \
+                       "pri_key INT AUTO_INCREMENT NOT NULL," \
+                       "dates VARCHAR(45) NOT NULL," \
+                       "clients VARCHAR(45) NOT NULL," \
+                       "orders INT NOT NULL," \
+                       "materials INT NOT NULL," \
+                       "PRIMARY KEY(pri_key));"
+        cursor.execute(create_table)
+        # put existing data into new table
         insertsql = "INSERT INTO aps1017.order_data VALUES(%s,%s,%s,%s,%s);"
         # date | client | order quantity | material
         for line in csv_reader:
             new_line.append(str(key))
+            time_struct = time.strptime(line[0], "%m/%d/%Y")
+            line[0] = time.strftime("%Y/%m/%d", time_struct)
             for items in line:
                 new_line.append(items)
             cursor.execute(insertsql, new_line)
             conn.commit()
-            print("insert line" + str(key) + "...")
+            print("insert line " + str(key) + "...")
             # set for next iteration
             key = key + 1
             new_line = []
@@ -74,11 +92,38 @@ def data_dispatcher(conn):
                     writer = csv.writer(file, dialect='excel')
                     writer.writerow(lines)
                 file.close()
+        # if the only input is client
+        for clients in clients_name:
+            find_all_client = "SELECT dates,clients,sum(orders) as c_orders FROM aps1017.order_data " \
+                              "where clients = '%s' group by dates order by dates; " % (clients)
+            cursor.execute(find_all_client)
+            result = cursor.fetchall()
+            file_name = "client-" + clients + "-material-all.csv"
+            file_path = os.path.join(base, file_name)
+            file = open(file_path, "w", encoding="utf-8", newline="")
+            for lines in result:
+                writer = csv.writer(file, dialect="excel")
+                writer.writerow(lines)
+            file.close()
+        # if the only input is material
+        for materials in materials_name:
+            find_all_client = "SELECT dates,materials,sum(orders) as m_orders FROM aps1017.order_data " \
+                              "where materials = '%s' group by dates order by dates; " % (materials)
+            cursor.execute(find_all_client)
+            result = cursor.fetchall()
+            file_name = "client-all-" + "-material-" + str(materials) + ".csv"
+            file_path = os.path.join(base, file_name)
+            file = open(file_path, "w", encoding="utf-8", newline="")
+            for lines in result:
+                writer = csv.writer(file, dialect="excel")
+                writer.writerow(lines)
+            file.close()
     except Exception as e:
         print(e)
         conn.rollback()
     cursor.close()
     conn.close()
+
 
 
 if __name__ == "__main__":
@@ -93,5 +138,6 @@ if __name__ == "__main__":
     database = "aps1017"
     charset = "utf8"
     conn = db_connect(host, port, user, password, database, charset)
-    # data_feeder(conn, dir)
+    if ADD_TABLE is True:
+        data_feeder(conn, dir)
     data_dispatcher(conn)
