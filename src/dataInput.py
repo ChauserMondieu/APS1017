@@ -10,6 +10,7 @@ def data_import(date, client, order_quantity, material, dir):
 
     # date | client | order quantity | material
     for line in csv_reader:
+        print(line)
         date.append(line[0])
         client.append(line[1])
         order_quantity.append(line[2])
