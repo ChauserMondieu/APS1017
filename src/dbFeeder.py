@@ -87,9 +87,11 @@ def data_dispatcher(conn):
                 file_name = "client-" + clients + "-material-" + str(materials) + ".csv"
                 file_path = os.path.join(dat_base, file_name)
                 file = open(file_path, 'w', encoding="utf-8", newline="")
+                writer = csv.writer(file, dialect='excel')
+                title = ['pri_key', 'dates', 'clients', 'orders', 'materials']
+                writer.writerow(title)
                 for lines in result:
                     # insert info into files
-                    writer = csv.writer(file, dialect='excel')
                     writer.writerow(lines)
                 file.close()
         # if the only input is client
@@ -101,8 +103,10 @@ def data_dispatcher(conn):
             file_name = "client-" + clients + "-material-all.csv"
             file_path = os.path.join(dat_base, file_name)
             file = open(file_path, "w", encoding="utf-8", newline="")
+            writer = csv.writer(file, dialect="excel")
+            title = ['pri_key', 'dates', 'clients', 'orders']
+            writer.writerow(title)
             for lines in result:
-                writer = csv.writer(file, dialect="excel")
                 writer.writerow(lines)
             file.close()
         # if the only input is material
@@ -114,8 +118,10 @@ def data_dispatcher(conn):
             file_name = "client-all-" + "-material-" + str(materials) + ".csv"
             file_path = os.path.join(dat_base, file_name)
             file = open(file_path, "w", encoding="utf-8", newline="")
+            writer = csv.writer(file, dialect="excel")
+            title = ['pri_key', 'dates', 'materials', 'orders']
+            writer.writerow(title)
             for lines in result:
-                writer = csv.writer(file, dialect="excel")
                 writer.writerow(lines)
             file.close()
     except Exception as e:

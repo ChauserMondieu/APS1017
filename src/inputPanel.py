@@ -1,8 +1,8 @@
 import tkinter as tk
 import os
 
-str = "interpolation.py"
-os.system(str)
+# str = "interpolation.py"
+# os.system(str)
 
 if __name__ == "__main__":
     window = tk.Tk()
@@ -15,7 +15,9 @@ if __name__ == "__main__":
     screen_height = window.winfo_screenheight()
     alignstr = '%dx%d+%d+%d' % (width, height, (screen_width-width), (screen_height-height))
     window.geometry(alignstr)
-    window.resizable(width=False,height=False)
+    window.resizable(width=False, height=False)
     l = tk.Label(window, text='你好！this is Tkinter', bg='green', font=('Arial', 12), width=30, height=2)
-    l.pack()
+    # l.pack()
+    b1 = tk.Button(window, text="submit", bg="red", relief="raised", width=8, height=2, state="normal")
+    b1.grid(row=0, column=0, sticky="W", padx=5, pady=5)
     window.mainloop()
