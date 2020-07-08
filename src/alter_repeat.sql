@@ -1,3 +1,6 @@
+# preparation + backup
+create table if not exists aps1017.order_data_backup like aps1017.order_data;
+insert into aps1017.order_data_backup select * from aps1017.order_data;
 drop table if exists aps1017.alter_repeat, aps1017.repeat_pri_key;
 
 # create new table alter_repeat stroing sum of repeated records
@@ -15,16 +18,17 @@ order by t1.pri_key;
 create table aps1017.repeat_pri_key as
 select t1.*, "true" as repeated 
 from aps1017.order_data as t1 join aps1017.order_data as t2 
-where t1.dates = t2.dates and
+where t1.pri_key != t2.pri_key and
+t1.dates = t2.dates and
 t1.clients = t2.clients and 
-t1.orders != t2.orders and
 t1.materials = t2.materials
 order by t1.pri_key;
 
 # delete all repeated records in table order_data
 delete aps1017.order_data 
 from aps1017.order_data inner join aps1017.repeat_pri_key 
-on aps1017.order_data.pri_key = aps1017.repeat_pri_key.pri_key;
+on aps1017.order_data.pri_key = aps1017.repeat_pri_key.pri_key
+where aps1017.order_data.pri_key = aps1017.repeat_pri_key.pri_key;
 
 # insert content of alter_repeat back into order_data
 insert into aps1017.order_data select *from aps1017.alter_repeat;
