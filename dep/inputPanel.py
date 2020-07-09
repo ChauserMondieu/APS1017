@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import *
 import os
 
-# str = "interpolation.py"
+# str = "Interpolation.py"
 # os.system(str)
 
 

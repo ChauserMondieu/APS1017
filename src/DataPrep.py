@@ -1,4 +1,4 @@
-from .DBFeeder import *
+from src.DBFeeder import *
 
 
 class DataMain:

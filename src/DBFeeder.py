@@ -8,8 +8,8 @@ class DBFeeder:
     """
     connect to MySQL database
     """
-    @staticmethod
-    def __db_connect(host, port, user, password, database, charset):
+    @classmethod
+    def db_connect(cls, host, port, user, password, database, charset):
         conn = pymysql.connect(host=host, port=port, user=user, password=password, db=database, charset=charset)
         return conn
 
@@ -26,6 +26,34 @@ class DBFeeder:
                     file.writelines(str(items) + "\n")
                 else:
                     file.writelines(items + "\n")
+            print("file " + file_name + " writing finished...")
+        except Exception as e:
+            print(e)
+            file.close()
+        finally:
+            file.close()
+
+    def __fetch_minmax(self, cursor, directory):
+        # fetch the max date in dates
+        get_max = "select max(dates) from aps1017.order_data;"
+        cursor.execute(get_max)
+        result = cursor.fetchall()
+        max_date = (result[0])[0]
+        # fetch the min date in dates
+        get_min = "select min(dates) from aps1017.order_data;"
+        cursor.execute(get_min)
+        result = cursor.fetchall()
+        min_date = (result[0])[0]
+        # store min and max dates in .txt file
+        self.__data_store(directory, "max_date", max_date)
+        self.__data_store(directory, "min_date", min_date)
+
+    def __data_store(self, directory, annotation, structure):
+        file_name = annotation + ".txt"
+        file_path = os.path.join(directory, file_name)
+        file = open(file_path, "w", encoding="utf-8", newline="")
+        try:
+            file.write(structure)
             print("file " + file_name + " writing finished...")
         except Exception as e:
             print(e)
@@ -186,6 +214,8 @@ class DBFeeder:
                 for lines in result:
                     writer.writerow(lines)
                 file.close()
+            # extract min and max value of dates and stored in .txt  file
+            cls().__fetch_minmax(cursor, dat_base)
         except Exception as e:
             print(e)
             conn.rollback()
