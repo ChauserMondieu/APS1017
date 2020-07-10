@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="container">
+{% block page_content %}
+    <div>
+        <h1>Hello, Please input following info ...</h1>
+    </div>
+{{ wtf.quick_form(form) }}
+{% endblock %}
+</div>
+{% endblock %}
+</html>

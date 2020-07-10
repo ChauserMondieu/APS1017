@@ -1,0 +1,25 @@
+from flask_wtf import Form
+from wtforms import StringField, SubmitField, SelectField, DateField
+from wtforms.validators import DataRequired
+
+from src.DataInput import *
+
+
+class Forms(object):
+
+    class DataQueryForm(Form):
+        # tag preparation
+        DataInput.fetch_info(DataInput.dat_dir)
+        clients_tags = DataInput.get__clients_name()
+        clients_tags.append("all")
+        materials_tags = DataInput.get__materials_name()
+        materials_tags.append("all")
+        # form construction
+        clients = SelectField(label="Please choose Client No.:", validators=[DataRequired()],
+                              choices=clients_tags, coerce=str)
+        materials = SelectField(label="Please choose Material No.:", validators=[DataRequired()],
+                                choices=materials_tags, coerce=str)
+        dates = StringField(label="Please input Date:", validators=[DataRequired()])
+        method = SelectField(label="Please choose prediction method:", validators=[DataRequired()],
+                             choices=[('m1', 'name_1'), ('m2', 'name_2'), ('m3', 'name_3')], coerce=str)
+        submit = SubmitField(label="Submit")

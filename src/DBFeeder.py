@@ -205,7 +205,7 @@ class DBFeeder:
                                   "where materials = '%s' group by dates order by dates; " % (materials)
                 cursor.execute(find_all_client)
                 result = cursor.fetchall()
-                file_name = "client-all-" + "-material-" + str(materials) + ".csv"
+                file_name = "client-all" + "-material-" + str(materials) + ".csv"
                 file_path = os.path.join(dat_base, file_name)
                 file = open(file_path, "w", encoding="utf-8", newline="")
                 writer = csv.writer(file, dialect="excel")
