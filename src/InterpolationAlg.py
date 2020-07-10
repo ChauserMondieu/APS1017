@@ -10,28 +10,30 @@ class Interpolation(object):
     def __interpolation(self, dates):
         date_no = (self.__timestamp_transfer(dates) - DataInput.get__min_time()) / DataInput.get__DAY_TIME()
         max_index = (DataInput.get__dates()[-1] - DataInput.get__min_time()) / DataInput.get__DAY_TIME()
-
-        max_index = int(max_index)
         orders = 0
-        if date_no < 1:
-            orders = self.__inter_func(DataInput.get__dates_series()[0],
-                                       DataInput.get__dates_series()[1],
-                                       date_no, 1)
-        elif date_no > max_index:
-            orders = self.__inter_func(DataInput.get__dates_series()[max_index - 1],
-                                       DataInput.get__dates_series()[max_index],
-                                       date_no, max_index)
+        # not enough data
+        if len(DataInput.get__dates_series()) < 2:
+            return orders
         else:
-            for index, num in enumerate(DataInput.get__dates_series()):
-                if date_no == num:
-                    orders = DataInput.get__orders()[index]
-                elif num < date_no < DataInput.get__dates_series()[index + 1]:
-                    orders = self.__inter_func(DataInput.get__dates_series()[index],
-                                               DataInput.get__dates_series()[index + 1],
-                                               date_no, index + 1)
-                else:
-                    continue
-        return orders
+            if date_no < 1:
+                orders = self.__inter_func(DataInput.get__dates_series()[0],
+                                           DataInput.get__dates_series()[1],
+                                           date_no, 1)
+            elif date_no > max_index:
+                orders = self.__inter_func(DataInput.get__dates_series()[-2],
+                                           DataInput.get__dates_series()[-1],
+                                           date_no, max_index)
+            else:
+                for index, num in enumerate(DataInput.get__dates_series()):
+                    if date_no == num:
+                        orders = DataInput.get__orders()[index]
+                    elif num < date_no < DataInput.get__dates_series()[index + 1]:
+                        orders = self.__inter_func(DataInput.get__dates_series()[index],
+                                                   DataInput.get__dates_series()[index + 1],
+                                                   date_no, index + 1)
+                    else:
+                        continue
+            return int(orders)
 
     def __inter_func(self, first_num, second_num, pred_pos, cur_pos):
         res = second_num - (cur_pos - pred_pos) * (second_num - first_num) / 2

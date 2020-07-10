@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, SubmitField, SelectField, DateField
+from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
 from src.DataInput import *
@@ -15,11 +15,11 @@ class Forms(object):
         materials_tags = DataInput.get__materials_name()
         materials_tags.append("all")
         # form construction
-        clients = SelectField(label="Please choose Client No.:", validators=[DataRequired()],
+        clients = SelectField(label="Please choose Client No.:",
                               choices=clients_tags, coerce=str)
-        materials = SelectField(label="Please choose Material No.:", validators=[DataRequired()],
+        materials = SelectField(label="Please choose Material No.:",
                                 choices=materials_tags, coerce=str)
-        dates = StringField(label="Please input Date:", validators=[DataRequired()])
-        method = SelectField(label="Please choose prediction method:", validators=[DataRequired()],
+        dates = StringField(label="Please input Date", validators=[DataRequired()], default="YYYY/mm/dd")
+        method = SelectField(label="Please choose prediction method:",
                              choices=[('m1', 'name_1'), ('m2', 'name_2'), ('m3', 'name_3')], coerce=str)
         submit = SubmitField(label="Submit")
