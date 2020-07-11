@@ -2,6 +2,7 @@ import pymysql
 import csv
 import os
 import time
+from itertools import islice
 
 
 class DBFeeder:
@@ -84,7 +85,7 @@ class DBFeeder:
             # put existing data into new table
             insert_sql = "INSERT INTO aps1017.order_data VALUES(%s,%s,%s,%s,%s);"
             # date | client | order quantity | material
-            for line in csv_reader:
+            for line in islice(csv_reader, 1, None):
                 new_line.append(str(key))
                 time_struct = time.strptime(line[0], "%m/%d/%Y")
                 line[0] = time.strftime("%Y/%m/%d", time_struct)
