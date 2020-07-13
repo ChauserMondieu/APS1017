@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-<html lang="en">
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}result{% endblock %}
+{% block title %}result_error{% endblock %}
 
 {% block content %}
 <div class="container">
 {% block page_content %}
     <div>
-        <h1>Hello ...</h1>
+        <h1>Please note for {{ f_method }}, we could only predict the aggregate order</h1>
+        <p>Please either change client to "all" or material to "all"...</p>
     </div>
-    <p>Your order result is: {{ orders }} </p>
     <span><a href="{{url_for('index')}}">return</a></span>
 {% endblock %}
 </div>
