@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-<html lang="en">
+
 {% extends "base.html" %}
 
 {% block title %}result{% endblock %}
@@ -14,8 +11,12 @@
     <div>
         <h1>Hello ...</h1>
     </div>
+    <center>
     <p>Your order result is: {{ orders }} </p>
-    <span><a href="{{url_for('index')}}">return</a></span>
+    <h1>Prediction and history are shown below:</h1>
+        <p><img src= "{{prediction_img}}" alt= "result img" width="450" height="300"></p>
+    <span><a href="{{ url_for('index') }}">return</a></span>
+    </center>
 {% endblock %}
 </div>
 {% endblock %}

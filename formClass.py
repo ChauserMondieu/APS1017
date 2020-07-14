@@ -21,5 +21,5 @@ class Forms(object):
                                 choices=materials_tags, coerce=str)
         dates = StringField(label="Please input Date", validators=[DataRequired()], default="YYYY/mm/dd")
         method = SelectField(label="Please choose prediction method:",
-                             choices=['ARIMA', 'Moving Average', 'Holt-Winter'], coerce=str)
+                             choices=['ARIMA'], coerce=str)
         submit = SubmitField(label="Submit")
