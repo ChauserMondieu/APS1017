@@ -9,11 +9,12 @@
 <div class="container">
 {% block page_content %}
     <div>
-        <h1>Hello ...</h1>
+        <h1>Your Prediction Result</h1>
     </div>
     <center>
-    <p>Your order result is: {{ orders }} </p>
-    <h1>Prediction and history are shown below:</h1>
+    <h2>Order Prediction</h2>
+        <p>{{ orders }}</p>
+    <h2>Prediction and History Graph</h2>
         <p><img src= "{{prediction_img}}" alt= "result img" width="450" height="300"></p>
     <span><a href="{{ url_for('index') }}">return</a></span>
     </center>
