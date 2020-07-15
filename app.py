@@ -31,7 +31,7 @@ def index():
             if f_clients == "all" and f_materials == "all":
                 return render_template("no_data.html")
             else:
-                orders = ar.ARIMA_main(dat_dir, f_clients, f_materials, f_dates)[0]
+                orders = round(ar.ARIMA_main(dat_dir, f_clients, f_materials, f_dates)[0])
                 prediction_img = ar.ARIMA_main(dat_dir, f_clients, f_materials, f_dates)[1]
                 # orders = ia.data_interpolation(f_dates)
                 return redirect(url_for('result', orders=orders, f_id=prediction_img))
